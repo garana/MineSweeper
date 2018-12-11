@@ -1,0 +1,7 @@
+
+ [ ] On each board click, the entire board is loaded, processed then saved again,
+     which is not so good for single-board concurrency (a single player sending
+     an HTTP click message while the previous is being processed).  Doing
+     something more granular would place some stress in the persistance store, as
+     on each click, more requests would be sent to it; and the cleanup process
+     could be heavier.
