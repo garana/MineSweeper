@@ -32,6 +32,8 @@ POST /game
    - width: integer: 5..50
    - height: integer: 5..50
 
+   (Limits are in api/Config.ts)
+
 GET /game
   Returns the full board as JSON array of strings.
   Each cell is represented by these possible states:
@@ -54,3 +56,12 @@ POST /click
   Required parameters:
   - x: integer: 0..board_width
   - y: integer: 0..board_height
+
+POST /flag
+  Sets on/off the "flagged" state of a hidden cell.
+  Required parameters:
+  - x: integer: 0..board_width
+  - y: integer: 0..board_height
+  - flagged: number:
+     * 0 or any "NaN" value => will turn off the flag,
+     * any other values will turn on the flag.

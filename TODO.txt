@@ -5,3 +5,17 @@
      something more granular would place some stress in the persistance store, as
      on each click, more requests would be sent to it; and the cleanup process
      could be heavier.
+
+ [ ] Using cookies for storing the board id may be troublesome for native apps,
+     as they need to parse the cookie headers.
+
+ [ ] To generate unique sessions, we use https://www.npmjs.com/package/uuid,
+     specifically uuid/v4. Need to check if this is good enough.
+
+ [ ] Board.ts: the check for _cellStates and _visibleMatrix is not 100%
+     accurate, and may lead to confusions.  There should be static factory
+     methods for each scenario (create a new board and instantiate a board from
+     JSON).
+
+ [ ] Board initialization (Board.constructor): could be smarter (initialize the
+     board as empty, place some random bombs).

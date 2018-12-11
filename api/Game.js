@@ -10,24 +10,23 @@ System.register(["./Board"], function (exports_1, context_1) {
         ],
         execute: function () {
             Game = class Game {
-                constructor(id, width, height, _board, _visiblem) {
-                    this.id = id;
+                constructor(width, height, _board, _visiblem, _flagMatrix) {
                     this.width = width;
                     this.height = height;
                     this._board = new Board_1.Board(width, height, _board, _visiblem);
                 }
-                static marshall(serialized) {
-                    let decoded = JSON.parse(serialized);
-                    return new this(decoded.id, decoded.width, decoded.height, decoded.cellStates, decoded.visibleMatrix);
-                }
-                serialize() {
-                    return JSON.stringify({
-                        id: this.id,
+                get board() { return this._board; }
+                toJSON() {
+                    return {
                         width: this.width,
                         height: this.height,
                         cellStates: this._board.cellStates,
-                        visibleMatrix: this._board.visibleMatrix
-                    });
+                        visibleMatrix: this._board.visibleMatrix,
+                        flagMatrix: this._board.flagMatrix
+                    };
+                }
+                static fromJSON(json) {
+                    return new this(json.width, json.height, json.cellStates, json.visibleMatrix, json.flagMatrix);
                 }
             };
             exports_1("Game", Game);
