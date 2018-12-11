@@ -1,0 +1,29 @@
+{
+  "name": "mine-sweeper",
+  "version": "1.0.0",
+  "description": "Classic MineSweeper game",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/garana/MineSweeper.git"
+  },
+  "keywords": [
+    "MineSweeper",
+    "Game"
+  ],
+  "author": "Gonzalo A. Arana <gonzalo.arana@gmail.com>",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/garana/MineSweeper/issues"
+  },
+  "homepage": "https://github.com/garana/MineSweeper#readme",
+  "devDependencies": {
+    "create-react-app": "^2.1.1",
+    "react-app-rewired": "^1.6.2",
+    "react-scripts": "^2.1.1",
+    "typescript": "^3.2.2"
+  }
+}

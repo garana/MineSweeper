@@ -1,0 +1,20 @@
+{
+  "name": "api",
+  "version": "0.1.0",
+  "description": "RESTful API for MineSweeper game.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "API",
+    "RESTful",
+    "API",
+    "MineSweeper"
+  ],
+  "author": "Gonzalo A. Arana <gonzalo.arana@gmail.com>",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
