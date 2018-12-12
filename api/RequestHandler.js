@@ -20,13 +20,19 @@ var RequestHandler = /** @class */ (function () {
         return this.sendServerSideError(res, "Internal error");
     };
     RequestHandler.prototype.sendRequestError = function (res, message) {
-        res.status(409).json({ error: message });
+        if (!res._response_sent)
+            res.status(409).json({ error: message });
+        res._response_sent = true;
     };
     RequestHandler.prototype.sendServerSideError = function (res, message) {
-        res.status(503).json({ error: message });
+        if (!res._response_sent)
+            res.status(503).json({ error: message });
+        res._response_sent = true;
     };
     RequestHandler.prototype.sendGame = function (res, game) {
-        res.status(200).json(game.publicView());
+        if (!res._response_sent)
+            res.status(200).json(game.publicView());
+        res._response_sent = true;
     };
     RequestHandler.prototype.createBoard = function (req, res) {
         var _this = this;

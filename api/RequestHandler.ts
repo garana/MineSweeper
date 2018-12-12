@@ -31,15 +31,21 @@ export class RequestHandler {
 	}
 
 	sendRequestError(res, message: string) {
-		res.status(409).json({ error: message });
+		if (!res._response_sent)
+			res.status(409).json({ error: message });
+		res._response_sent = true;
 	}
 
 	sendServerSideError(res, message: string) {
-		res.status(503).json({ error: message });
+		if (!res._response_sent)
+			res.status(503).json({ error: message });
+		res._response_sent = true;
 	}
 
 	sendGame(res, game: Game) {
-		res.status(200).json(game.publicView());
+		if (!res._response_sent)
+			res.status(200).json(game.publicView());
+		res._response_sent = true;
 	}
 
 	createBoard(req, res) {
