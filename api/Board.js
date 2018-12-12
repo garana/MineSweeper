@@ -3,6 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Config_1 = require("./Config");
 var RequestError_1 = require("./RequestError");
 var Cell_1 = require("./Cell");
+/**
+ * The board is represented as an array of rows, from top to bottom, left to
+ * right.
+ */
 var Board = /** @class */ (function () {
     function Board(width, height, _cells) {
         this.width = width;
@@ -43,7 +47,7 @@ var Board = /** @class */ (function () {
             }
             for (var x = width; x--;)
                 for (var y = height; y--;)
-                    this._cells[x][y].neighborBombs =
+                    this._cells[y][x].neighborBombs =
                         (this._hasBombSafe(x + 1, y) ? 1 : 0) +
                             (this._hasBombSafe(x - 1, y) ? 1 : 0) +
                             (this._hasBombSafe(x, y + 1) ? 1 : 0) +
@@ -58,13 +62,13 @@ var Board = /** @class */ (function () {
     };
     Board.prototype._hasBombSafe = function (x, y) {
         return this._coordsInRange(x, y) ?
-            this._cells[x][y].hasBomb :
+            this._cells[y][x].hasBomb :
             false;
     };
     Board.prototype._spread = function (x, y) {
         if (!this._coordsInRange(x, y))
             return;
-        var cell = this._cells[x][y];
+        var cell = this._cells[y][x];
         if (cell.visible)
             return;
         if (cell.hasBomb)
@@ -103,7 +107,7 @@ var Board = /** @class */ (function () {
      */
     Board.prototype.click = function (x, y) {
         this._checkCoords(x, y);
-        var cell = this._cells[x][y];
+        var cell = this._cells[y][x];
         // If it's already visible, no action is required.
         if (cell.visible)
             return;
@@ -118,7 +122,7 @@ var Board = /** @class */ (function () {
      */
     Board.prototype.flag = function (x, y, newValue) {
         this._checkCoords(x, y);
-        var cell = this._cells[x][y];
+        var cell = this._cells[y][x];
         if (cell.visible)
             throw new RequestError_1.RequestError("Cell is already visible");
         cell.flagged = newValue;
@@ -129,15 +133,11 @@ var Board = /** @class */ (function () {
         configurable: true
     });
     Board.prototype.publicView = function () {
-        var retVal = [];
-        for (var x = 0; x < this.width; ++x) {
-            var row = [];
-            for (var y = 0; y < this.height; ++y) {
-                row.push(this._cells[x][y].publicView());
-            }
-            retVal.push(row);
-        }
-        return retVal;
+        return this._cells.map(function (row) {
+            return row.map(function (cell) {
+                return cell.publicView();
+            });
+        });
     };
     return Board;
 }());

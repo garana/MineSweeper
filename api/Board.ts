@@ -9,6 +9,10 @@ import {RequestError} from "./RequestError";
 import {ServerSideError} from "./ServerSideError";
 import {Cell} from "./Cell";
 
+/**
+ * The board is represented as an array of rows, from top to bottom, left to
+ * right.
+ */
 export class Board {
 
 	constructor(readonly width: number,
@@ -59,7 +63,7 @@ export class Board {
 
 			for (let x = width; x--;)
 				for (let y = height; y--;)
-					this._cells[x][y].neighborBombs =
+					this._cells[y][x].neighborBombs =
 						(this._hasBombSafe(x+1, y) ? 1 : 0) +
 						(this._hasBombSafe(x-1, y) ? 1 : 0) +
 						(this._hasBombSafe(x, y+1) ? 1 : 0) +
@@ -78,7 +82,7 @@ export class Board {
 
 	protected _hasBombSafe(x: number, y: number): boolean {
 		return this._coordsInRange(x, y) ?
-			this._cells[x][y].hasBomb :
+			this._cells[y][x].hasBomb :
 			false;
 	}
 
@@ -87,7 +91,7 @@ export class Board {
 		if (!this._coordsInRange(x, y))
 			return;
 
-		let cell = this._cells[x][y];
+		let cell = this._cells[y][x];
 
 		if (cell.visible)
 			return;
@@ -141,7 +145,7 @@ export class Board {
 
 		this._checkCoords(x, y);
 
-		let cell = this._cells[x][y];
+		let cell = this._cells[y][x];
 
 		// If it's already visible, no action is required.
 		if (cell.visible)
@@ -165,7 +169,7 @@ export class Board {
 
 		this._checkCoords(x, y);
 
-		let cell = this._cells[x][y];
+		let cell = this._cells[y][x];
 
 		if (cell.visible)
 			throw new RequestError(`Cell is already visible`);
@@ -177,17 +181,13 @@ export class Board {
 	get cells() { return this._cells }
 
 	publicView(): Array<Array<any>> {
-		let retVal: Array<Array<any>> = [];
 
-		for (let x = 0; x < this.width; ++x) {
-			let row = [];
-			for (let y = 0; y < this.height; ++y) {
-				row.push(this._cells[x][y].publicView());
-			}
-			retVal.push(row);
-		}
+		return this._cells.map( (row: Array<Cell>) => {
+			return row.map( (cell: Cell) => {
+				return cell.publicView();
+			})
+		})
 
-		return retVal;
 	}
 
 }
