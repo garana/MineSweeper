@@ -1,12 +1,8 @@
 
-export class PersistenceStore {
+export abstract class PersistenceStore {
 
-	static get(name: string): string {
+	abstract get(name: string): Promise<string>;
 
-	}
-
-	static set(name: string, value: string) {
-
-	}
+	abstract set(name: string, value: string): Promise<boolean>;
 
 }

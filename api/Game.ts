@@ -1,6 +1,6 @@
 
 import {Board} from "./Board";
-import {CellState} from "./CellState";
+import {Cell} from "./Cell";
 
 export class Game {
 
@@ -9,11 +9,9 @@ export class Game {
 	constructor(
 		readonly width: number,
 		readonly height: number,
-		_board?: Array< Array<CellState> >,
-		_visiblem?: Array< Array< boolean> >,
-		_flagMatrix?: Array< Array<boolean> >) {
+		_board?: Array< Array<Cell> >) {
 
-		this._board = new Board(width, height, _board, _visiblem);
+		this._board = new Board(width, height, _board);
 	}
 
 	get board(): Board { return this._board }
@@ -22,20 +20,25 @@ export class Game {
 		return {
 			width: this.width,
 			height: this.height,
-			cellStates: this._board.cellStates,
-			visibleMatrix: this._board.visibleMatrix,
-			flagMatrix: this._board.flagMatrix
+			cells: this._board.cells
 		}
 	}
 
-	static fromJSON(json) {
+	static fromJSON(json: string): Game {
+		let js = JSON.parse(json);
 		return new this(
-			json.width,
-			json.height,
-			json.cellStates,
-			json.visibleMatrix,
-			json.flagMatrix
+			js.width,
+			js.height,
+			js.cells
 		)
+	}
+
+	publicView(): any {
+		return {
+			width: this.width,
+			height: this.height,
+			board: this.board.publicView()
+		}
 	}
 
 	// static marshall(serialized: string): Game {

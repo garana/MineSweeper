@@ -35,20 +35,28 @@ POST /game
    (Limits are in api/Config.ts)
 
 GET /game
-  Returns the full board as JSON array of strings.
-  Each cell is represented by these possible states:
-    - 'h' => hidden
-    - 'e' => empty (it's visible and empty).
-    - 'm' => "m" (it's visible and has a mine).
+  Returns the full board as JSON structure.
+  Each cell is represented by an array of 2 entries:
+    - flags: a string indicating the flags "visible" (represented with a 'v')
+    and "flagged" (represented with an 'f').
+    - the number of neighboring bombs.
 
   Board (5x5) in a response:
-  [
-      "hhhhh",
-      "hbbbb",
-      "beebh",
-      "hbbhh",
-      "hhhhh"
-  ]
+  {
+     "width":5,
+     "height":5,
+     "board":[
+        [             // first row
+           ["f",0],   // top-left cell, flagged
+           ["v",2],   // next cell to the right, visible, 2 neighboring bombs.
+           ["v",2],
+           ["",0],
+           ["",2]
+        ],
+        ....
+     ]
+  }
+
 
 POST /click
   Sends a "click" of a cell, it should be in "hidden" state, otherwise a "409
@@ -65,3 +73,16 @@ POST /flag
   - flagged: number:
      * 0 or any "NaN" value => will turn off the flag,
      * any other values will turn on the flag.
+
+
+Testing
+=======
+
+Launch the API (remember to run .setup.sh first):
+PORT=3088 node --require ts-node/register index.js
+
+Create a 5x5 board:
+curl -v -d 'width=5&height=5' http://localhost:3088/game; echo
+
+Get the board status:
+curl -v -H 'Cookie: mineSweeper=4201e832-b2df-4a96-b3b4-65eb0363bd32' http://localhost:3088/game; echo

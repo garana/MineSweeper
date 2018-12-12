@@ -1,1 +1,1 @@
-{"version":3,"file":"ServerSideError.js","sourceRoot":"","sources":["ServerSideError.ts"],"names":[],"mappings":";;;;;;;YACA,kBAAA,MAAa,eAAgB,SAAQ,KAAK;gBAA1C;;oBACU,oBAAe,GAAG,IAAI,CAAC;gBACjC,CAAC;aAAA,CAAA;;QACD,CAAC"}
+{"version":3,"file":"ServerSideError.js","sourceRoot":"","sources":["ServerSideError.ts"],"names":[],"mappings":";;;;;;;;;;;;;;;AACA;IAAqC,mCAAK;IAA1C;QAAA,qEAEC;QADS,qBAAe,GAAG,IAAI,CAAC;;IACjC,CAAC;IAAD,sBAAC;AAAD,CAAC,AAFD,CAAqC,KAAK,GAEzC;AAFY,0CAAe"}

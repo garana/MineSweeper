@@ -1,4 +1,4 @@
-import {CellState} from "./CellState";
+
 import {
 	MAX_BOARD_HEIGHT,
 	MAX_BOARD_WIDTH,
@@ -7,24 +7,34 @@ import {
 } from "./Config";
 import {RequestError} from "./RequestError";
 import {ServerSideError} from "./ServerSideError";
+import {Cell} from "./Cell";
 
 export class Board {
 
 	constructor(readonly width: number,
 	            readonly height: number,
-	            protected _cellStates?: Array< Array<CellState> >,
-	            protected _visibleMatrix?: Array< Array< boolean> >,
-	            protected _flagMatrix?: Array< Array<boolean> >) {
+	            protected _cells: Array< Array<Cell> >) {
 
-		if (!_cellStates) {
-			if (_visibleMatrix)
-				throw new ServerSideError(`A Board can't be created without state but visibility matrix`);
+		if (_cells) {
+			this._cells = _cells.map( (row: Array<Cell>) => {
+				return row.map( (cell: Cell) => {
+					return new Cell(cell.hasBomb, cell.visible, cell.neighborBombs, cell.flagged);
+				})
+			})
+
+		} else {
 
 			/**
 			 * These checks are performed only when we are creating a new
 			 * board, to allow backwards compatibility in case the limits
 			 * are modified.
 			 */
+			if (!isFinite(width))
+				throw new RequestError(`Missing mandatory "width" parameter.`);
+
+			if (!isFinite(height))
+				throw new RequestError(`Missing mandatory "height" parameter.`);
+
 			if (this.width < MIN_BOARD_WIDTH)
 				throw new RequestError(`Board can't be narrower than ${MIN_BOARD_WIDTH}`);
 
@@ -37,56 +47,65 @@ export class Board {
 			if (this.height > MAX_BOARD_HEIGHT)
 				throw new RequestError(`Board can't be taller than ${MAX_BOARD_HEIGHT}`);
 
-			this._cellStates = [];
-			this._visibleMatrix = [];
-			this._flagMatrix = [];
+			this._cells = [];
 
 			for (let y = 0; y < height; ++y) {
-				let board_row = [];
-				let visible_row = [];
-				let flag_row = [];
+				let cell_row = [];
 				for (let x = 0; x < width; ++x) {
-					board_row.push(Math.random() > .7 ? CellState.Bomb : CellState.Empty);
-					visible_row.push(false);
-					flag_row.push(false);
+					cell_row.push(new Cell(Math.random() > .7, false, 0, false));
 				}
-				this._cellStates.push(board_row);
-				this._visibleMatrix.push(visible_row);
-				this._flagMatrix.push(flag_row);
+				this._cells.push(cell_row);
 			}
+
+			for (let x = width; x--;)
+				for (let y = height; y--;)
+					this._cells[x][y].neighborBombs =
+						(this._hasBombSafe(x+1, y) ? 1 : 0) +
+						(this._hasBombSafe(x-1, y) ? 1 : 0) +
+						(this._hasBombSafe(x, y+1) ? 1 : 0) +
+						(this._hasBombSafe(x, y-1) ? 1 : 0);
+
 		}
 
 	}
 
+	protected _coordsInRange(x: number, y: number): boolean {
+		return (x >= 0) &&
+			(y >= 0) &&
+			(x < this.width) &&
+			(y < this.height);
+	}
+
+	protected _hasBombSafe(x: number, y: number): boolean {
+		return this._coordsInRange(x, y) ?
+			this._cells[x][y].hasBomb :
+			false;
+	}
+
 	protected _spread(x: number, y: number) {
 
-		if (
-			(x < 0) ||
-			(y < 0) ||
-			(x >= this.width) ||
-			(y >= this.height)
-		)
+		if (!this._coordsInRange(x, y))
 			return;
 
-		if (this._visibleMatrix[x][y])
+		let cell = this._cells[x][y];
+
+		if (cell.visible)
 			return;
 
-		this._visibleMatrix[x][y] = true;
+		if (cell.hasBomb)
+			return;
 
-		switch (this._cellStates[x][y]) {
-			case CellState.Empty:
-				this._spread(x+1, y);
-				this._spread(x-1, y);
-				this._spread(x, y+1);
-				this._spread(x, y-1);
-				return true;
+		cell.visible = true;
 
-			case CellState.Bomb:
-				return false;
-
-			default:
-				throw new Error(`Internal state corruption`);
+		if (!cell.hasBomb) {
+			this._spread(x+1, y);
+			this._spread(x-1, y);
+			this._spread(x, y+1);
+			this._spread(x, y-1);
+			return true;
 		}
+
+		return false;
 
 	}
 
@@ -122,23 +141,21 @@ export class Board {
 
 		this._checkCoords(x, y);
 
+		let cell = this._cells[x][y];
+
 		// If it's already visible, no action is required.
-		if (this._visibleMatrix[x][y])
+		if (cell.visible)
 			return;
 
-		this._visibleMatrix[x][y] = true;
+		cell.visible = true;
 
-		switch (this._cellStates[x][y]) {
-			case CellState.Empty:
-				this._spread(x, y);
-				return true;
+		if (cell.hasBomb)
+			return false;
 
-			case CellState.Bomb:
-				return false;
+		this._spread(x, y);
 
-			default:
-				throw new ServerSideError(`Internal state corruption, please start a new game`);
-		}
+		return true;
+
 	}
 
 	/**
@@ -148,15 +165,29 @@ export class Board {
 
 		this._checkCoords(x, y);
 
-		if (this._visibleMatrix[x][y])
+		let cell = this._cells[x][y];
+
+		if (cell.visible)
 			throw new RequestError(`Cell is already visible`);
 
-		this._flagMatrix[x][y] = newValue;
+		cell.flagged = newValue;
 
 	}
 
-	get cellStates() { return this._cellStates }
-	get visibleMatrix() { return this._visibleMatrix }
-	get flagMatrix() { return this._flagMatrix }
+	get cells() { return this._cells }
+
+	publicView(): Array<Array<any>> {
+		let retVal: Array<Array<any>> = [];
+
+		for (let x = 0; x < this.width; ++x) {
+			let row = [];
+			for (let y = 0; y < this.height; ++y) {
+				row.push(this._cells[x][y].publicView());
+			}
+			retVal.push(row);
+		}
+
+		return retVal;
+	}
 
 }

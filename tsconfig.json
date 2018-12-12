@@ -1,13 +1,9 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "module": "system",
-    "moduleResolution": "node",
-    "sourceMap": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "removeComments": false,
-    "noImplicitAny": false
+	  "lib": [ "es2016" ],
+	  "target": "es5",
+	  "sourceMap": true,
+	  "experimentalDecorators": true
   },
   "exclude": [
     "node_modules",
