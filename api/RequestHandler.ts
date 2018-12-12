@@ -10,7 +10,7 @@ import assert = require("assert");
 
 
 export class RequestHandler {
-	
+
 	constructor(readonly store: PersistenceStore) {
 	}
 	
@@ -94,6 +94,23 @@ export class RequestHandler {
 		})
 	}
 
+	saveGame(req, res, game: Game): Promise<Game> {
+
+		let boardId = req.cookies ? req.cookies[SESSION_NAME] : null;
+
+		if (!boardId) {
+			this.sendRequestError(res, `Missing cookie ${SESSION_NAME}`);
+			return new Promise<Game>((res, rej) => rej(false));
+		}
+
+		return this.store.set(boardId, JSON.stringify(game)).then( () => {
+			return game;
+		}, (err) => {
+			this.sendServerSideError(res, err.message);
+			throw err;
+		});
+	}
+
 	showBoard(req, res) {
 
 		this.getGame(req, res).then( (game: Game) => {
@@ -105,17 +122,20 @@ export class RequestHandler {
 	processClick(req, res) {
 
 		return this.getGame(req, res).then((game: Game) => {
-			let x = parseInt(req.param.x);
-			let y = parseInt(req.param.y);
+			let x = parseInt(req.body.x);
+			let y = parseInt(req.body.y);
 
 			try {
 				game.board.click(x, y)
+				this.saveGame(req, res, game).then( () => {
+					this.sendGame(res, game);
+				})
 			} catch (e) {
+				if (res)
 				this.sendError(res, e);
 				return
 			}
 
-			this.sendGame(res, game);
 		})
 
 	}
@@ -123,23 +143,21 @@ export class RequestHandler {
 	processFlag(req, res) {
 
 		return this.getGame(req, res).then((game: Game) => {
-			let x = parseInt(req.param.x);
-			let y = parseInt(req.param.y);
-			let flagged = parseInt(req.param.flagged);
+			let x = parseInt(req.body.x);
+			let y = parseInt(req.body.y);
+			let flagged = parseInt(req.body.flagged);
 
 			try {
 				game.board.flag(x, y, !!flagged);
+				this.saveGame(req, res, game).then( () => {
+					this.sendGame(res, game);
+				})
 			} catch (e) {
 				this.sendError(res, e);
 				return
 			}
-
-			this.sendGame(res, game);
 		})
 
 	}
 
 }
-
-
-

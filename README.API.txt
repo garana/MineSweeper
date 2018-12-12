@@ -85,4 +85,17 @@ Create a 5x5 board:
 curl -v -d 'width=5&height=5' http://localhost:3088/game; echo
 
 Get the board status:
-curl -v -H 'Cookie: mineSweeper=4201e832-b2df-4a96-b3b4-65eb0363bd32' http://localhost:3088/game; echo
+curl -v \
+    -H 'Cookie: mineSweeper=4201e832-b2df-4a96-b3b4-65eb0363bd32' \
+    http://localhost:3088/game; echo
+
+Simulate a click in the board:
+
+curl -d 'x=0&y=0' \
+    -H 'Cookie: mineSweeper=cca95a25-ccf6-438e-8252-bf9b3dd3b00d' \
+    http://localhost:3088/click; echo
+
+Simulate a flagging in the board:
+curl -d 'x=2&y=0&flagged=1' \
+    -H 'Cookie: mineSweeper=cca95a25-ccf6-438e-8252-bf9b3dd3b00d' \
+    http://localhost:3088/click; echo

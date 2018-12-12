@@ -74,6 +74,20 @@ var RequestHandler = /** @class */ (function () {
             // return new Promise( (res, rej) => rej(null));
         });
     };
+    RequestHandler.prototype.saveGame = function (req, res, game) {
+        var _this = this;
+        var boardId = req.cookies ? req.cookies[Config_1.SESSION_NAME] : null;
+        if (!boardId) {
+            this.sendRequestError(res, "Missing cookie " + Config_1.SESSION_NAME);
+            return new Promise(function (res, rej) { return rej(false); });
+        }
+        return this.store.set(boardId, JSON.stringify(game)).then(function () {
+            return game;
+        }, function (err) {
+            _this.sendServerSideError(res, err.message);
+            throw err;
+        });
+    };
     RequestHandler.prototype.showBoard = function (req, res) {
         var _this = this;
         this.getGame(req, res).then(function (game) {
@@ -83,32 +97,37 @@ var RequestHandler = /** @class */ (function () {
     RequestHandler.prototype.processClick = function (req, res) {
         var _this = this;
         return this.getGame(req, res).then(function (game) {
-            var x = parseInt(req.param.x);
-            var y = parseInt(req.param.y);
+            var x = parseInt(req.body.x);
+            var y = parseInt(req.body.y);
             try {
                 game.board.click(x, y);
+                _this.saveGame(req, res, game).then(function () {
+                    _this.sendGame(res, game);
+                });
             }
             catch (e) {
-                _this.sendError(res, e);
+                if (res)
+                    _this.sendError(res, e);
                 return;
             }
-            _this.sendGame(res, game);
         });
     };
     RequestHandler.prototype.processFlag = function (req, res) {
         var _this = this;
         return this.getGame(req, res).then(function (game) {
-            var x = parseInt(req.param.x);
-            var y = parseInt(req.param.y);
-            var flagged = parseInt(req.param.flagged);
+            var x = parseInt(req.body.x);
+            var y = parseInt(req.body.y);
+            var flagged = parseInt(req.body.flagged);
             try {
                 game.board.flag(x, y, !!flagged);
+                _this.saveGame(req, res, game).then(function () {
+                    _this.sendGame(res, game);
+                });
             }
             catch (e) {
                 _this.sendError(res, e);
                 return;
             }
-            _this.sendGame(res, game);
         });
     };
     return RequestHandler;
