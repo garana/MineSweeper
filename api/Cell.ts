@@ -1,9 +1,9 @@
 
 export class Cell {
 
-	constructor(readonly hasBomb: boolean,
+	constructor(public hasMine: boolean,
 	            public visible: boolean,
-	            public neighborBombs: number,
+	            public neighborMines: number,
 	            public flagged: boolean) {
 
 	}
@@ -11,8 +11,9 @@ export class Cell {
 	publicView(): Array<any> {
 		return [
 			( this.visible ? 'v' : '' ) +
-			( this.flagged ? 'f' : '' ),
-			this.neighborBombs
+			( this.flagged ? 'f' : '' ) +
+			( this.visible && this.hasMine ? 'm' : ''),
+			this.neighborMines
 		];
 	}
 

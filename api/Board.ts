@@ -17,12 +17,13 @@ export class Board {
 
 	constructor(readonly width: number,
 	            readonly height: number,
+	            readonly mines: number,
 	            protected _cells: Array< Array<Cell> >) {
 
 		if (_cells) {
 			this._cells = _cells.map( (row: Array<Cell>) => {
 				return row.map( (cell: Cell) => {
-					return new Cell(cell.hasBomb, cell.visible, cell.neighborBombs, cell.flagged);
+					return new Cell(cell.hasMine, cell.visible, cell.neighborMines, cell.flagged);
 				})
 			})
 
@@ -56,14 +57,33 @@ export class Board {
 			for (let y = 0; y < height; ++y) {
 				let cell_row = [];
 				for (let x = 0; x < width; ++x) {
-					cell_row.push(new Cell(Math.random() > .7, false, 0, false));
+					cell_row.push(new Cell(false, false, 0, false));
 				}
 				this._cells.push(cell_row);
 			}
 
+			for (let imine = this.mines; imine--;) {
+				while (true) {
+					let x = Math.floor(Math.random() * this.width);
+					let y = Math.floor(Math.random() * this.height);
+					// Although not possible as stated by Math.random specs,
+					// we'd rather catch edge cases bugs.
+					if (x === this.width)
+						continue;
+					if (y === this.height)
+						continue;
+
+					if (this._cells[y][x].hasMine)
+						continue;
+
+					this._cells[y][x].hasMine = true;
+					break;
+				}
+			}
+
 			for (let x = width; x--;)
 				for (let y = height; y--;)
-					this._cells[y][x].neighborBombs =
+					this._cells[y][x].neighborMines =
 						(this._hasBombSafe(x+1, y) ? 1 : 0) +
 						(this._hasBombSafe(x-1, y) ? 1 : 0) +
 						(this._hasBombSafe(x, y+1) ? 1 : 0) +
@@ -82,8 +102,15 @@ export class Board {
 
 	protected _hasBombSafe(x: number, y: number): boolean {
 		return this._coordsInRange(x, y) ?
-			this._cells[y][x].hasBomb :
+			this._cells[y][x].hasMine :
 			false;
+	}
+
+	protected _spread_neighbors(x: number, y: number) {
+		this._spread(x+1, y);
+		this._spread(x-1, y);
+		this._spread(x, y+1);
+		this._spread(x, y-1);
 	}
 
 	protected _spread(x: number, y: number) {
@@ -96,20 +123,12 @@ export class Board {
 		if (cell.visible)
 			return;
 
-		if (cell.hasBomb)
+		if (cell.hasMine)
 			return;
 
 		cell.visible = true;
 
-		if (!cell.hasBomb) {
-			this._spread(x+1, y);
-			this._spread(x-1, y);
-			this._spread(x, y+1);
-			this._spread(x, y-1);
-			return true;
-		}
-
-		return false;
+		this._spread_neighbors(x, y)
 
 	}
 
@@ -153,10 +172,10 @@ export class Board {
 
 		cell.visible = true;
 
-		if (cell.hasBomb)
+		if (cell.hasMine)
 			return false;
 
-		this._spread(x, y);
+		this._spread_neighbors(x, y);
 
 		return true;
 

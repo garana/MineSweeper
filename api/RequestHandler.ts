@@ -51,6 +51,13 @@ export class RequestHandler {
 	createBoard(req, res) {
 		let width = parseInt(req.body.width);
 		let height = parseInt(req.body.height);
+		let mines = Math.max(
+			0,
+			Math.min(
+				Math.sqrt(width * height),
+				parseInt(req.body.mines) || 5
+			)
+		);
 		let sessionCreated = false;
 		let boardId = req.cookies ? req.cookies.boardId : null;
 
@@ -63,7 +70,7 @@ export class RequestHandler {
 		let game: Game;
 
 		try {
-			game = new Game(width, height);
+			game = new Game(width, height, mines, false);
 		} catch (e /*: Error | ServerSideError | RequestError*/) {
 			this.sendError(res, e);
 			return;
@@ -126,10 +133,13 @@ export class RequestHandler {
 			let y = parseInt(req.body.y);
 
 			try {
-				game.board.click(x, y)
+
+				game.click(x, y);
+
 				this.saveGame(req, res, game).then( () => {
 					this.sendGame(res, game);
 				})
+
 			} catch (e) {
 				if (res)
 				this.sendError(res, e);
