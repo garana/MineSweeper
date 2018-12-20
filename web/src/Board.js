@@ -34,6 +34,7 @@ class Board extends Component {
 		return (
 			<div>
 				<table>
+					<tbody>
 					{
 						board.map( (row, irow) => {
 							return <tr key={`row-${irow}`}>
@@ -48,6 +49,7 @@ class Board extends Component {
 							</tr>
 						})
 					}
+					</tbody>
 				</table>
 			</div>
 		)
