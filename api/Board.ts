@@ -93,6 +93,22 @@ export class Board {
 
 	}
 
+	public won(): boolean {
+
+		let flaggedc = 0;
+
+		for (let x = this.width; x--;) {
+			for (let y = this.height; y--;) {
+				if (this._cells[y][x].flagged) {
+					flaggedc++;
+				}
+			}
+		}
+
+		return flaggedc === this.mines;
+
+	}
+
 	protected _coordsInRange(x: number, y: number): boolean {
 		return (x >= 0) &&
 			(y >= 0) &&

@@ -20,12 +20,17 @@ export class Game {
 
 	get lost(): boolean { return this._lost }
 
+	won(): boolean {
+		return this._board.won();
+	}
+
 	toJSON() {
 		return {
 			width: this.width,
 			height: this.height,
 			mines: this.mines,
 			lost: this.lost,
+			won: this.won(),
 			cells: this._board.cells
 		}
 	}
@@ -48,12 +53,17 @@ export class Game {
 		}
 	}
 
+	flag(x: number, y: number, flagged: boolean) {
+		this.board.flag(x, y, !!flagged);
+	}
+
 	publicView(): any {
 		return {
 			width: this.width,
 			height: this.height,
 			mines: this.mines,
 			lost: this.lost,
+			won: this.won(),
 			board: this.board.publicView()
 		}
 	}

@@ -158,7 +158,9 @@ export class RequestHandler {
 			let flagged = parseInt(req.body.flagged);
 
 			try {
-				game.board.flag(x, y, !!flagged);
+
+				game.flag(x, y, !!flagged);
+
 				this.saveGame(req, res, game).then( () => {
 					this.sendGame(res, game);
 				})
