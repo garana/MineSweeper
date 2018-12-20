@@ -1,18 +1,18 @@
 
 import React, { Component } from 'react';
+import './Board.css';
 
 class Board extends Component {
-
-	constructor(props) {
-		super(props)
-	}
 
 	showCell(cell) {
 
 		let [ flags, count ] = cell;
 
+		if (flags.indexOf("m") >= 0)
+			return 'X';
+
 		if (flags.indexOf("v") >= 0)
-			return count;
+			return count || ' ';
 
 		if (flags.indexOf("f") >= 0)
 			return '!';
@@ -24,16 +24,14 @@ class Board extends Component {
 
 		let currentGame = this.props.currentGame;
 
-		let width = currentGame.width;
-		let height = currentGame.height;
 		let board = currentGame.board;
 		let handleCellClick = this.props.handleCellClick;
 
 		console.log(this.props);
 
 		return (
-			<div>
-				<table>
+			<div className={"minesweeper-board"}>
+				<table className={"board"}>
 					<tbody>
 					{
 						board.map( (row, irow) => {
@@ -51,6 +49,14 @@ class Board extends Component {
 					}
 					</tbody>
 				</table>
+
+				<div className={"game-lost"}>
+					{
+						currentGame.lost ?
+							"TOO BAD :(" :
+							""
+					}
+				</div>
 			</div>
 		)
 	}

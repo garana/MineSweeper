@@ -1,0 +1,25 @@
+
+.minesweeper-board  > * {
+	display: inline-block;
+	vertical-align: top;
+}
+
+.game-lost {
+	margin-left: 1em;
+}
+
+table.board:hover {
+	cursor: pointer;
+}
+
+table.board td {
+	border: 1px solid grey;
+	width: 1em;
+	height: 1em;
+	text-align: center;
+}
+
+table.board td:hover {
+	border: 1px solid black;
+	font-weight: bold;
+}

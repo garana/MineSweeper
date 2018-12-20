@@ -1,5 +1,5 @@
 
-import React, { Component } from 'react';
+import React from 'react';
 import './NewGameForm.css';
 
 class NewGameForm extends React.Component {
@@ -11,12 +11,13 @@ class NewGameForm extends React.Component {
 			newGame: {
 				width: 5,
 				height: 5,
-				bombs: 5
+				mines: 5
 			}
 		}
 	}
 
 	handleNewGameWidthChange(event) {
+		event.persist();
 		this.setState( (prevState, props) => {
 			return {
 				newGame: {
@@ -28,6 +29,7 @@ class NewGameForm extends React.Component {
 	}
 
 	handleNewGameHeightChange(event) {
+		event.persist();
 		this.setState( (prevState, props) => {
 			return {
 				newGame: {
@@ -38,12 +40,13 @@ class NewGameForm extends React.Component {
 		})
 	}
 
-	handleNewGameBombsChange(event) {
+	handleNewGameMinesChange(event) {
+		event.persist();
 		this.setState( (prevState, props) => {
 			return {
 				newGame: {
 					...prevState.newGame,
-					bombs: event.target.value
+					mines: event.target.value
 				}
 			}
 		})
@@ -60,7 +63,6 @@ class NewGameForm extends React.Component {
 		return (
 			<div className={"new-game"}>
 				<form
-					layout={"inline"}
 					onSubmit={this.createNewGame.bind(this)}
 				>
 					<div className={"new-game-input"}>
@@ -82,10 +84,10 @@ class NewGameForm extends React.Component {
 					</div>
 
 					<div className={"new-game-input"}>
-						<label htmlFor={"new-game-bombs"}>Bombs</label>
+						<label htmlFor={"new-game-mines"}>Mines</label>
 						<input type={"number"} defaultValue={5}
-							   id={"new-game-bombs"}
-							   onChange={this.handleNewGameBombsChange.bind(this)}
+							   id={"new-game-mines"}
+							   onChange={this.handleNewGameMinesChange.bind(this)}
 							   style={ { width: '4em', textAlign: 'right' } }
 						/>
 					</div>

@@ -13,10 +13,8 @@ class Game extends Component {
 		super(props);
 
 		this.state = {
-			// currentGame: {"bombs":5,"width":5,"height":5,"board":[[["",1],["",2],["",3],["",2],["",1]],[["",2],["",2],["",2],["",2],["",1]],[["",0],["",2],["",2],["",0],["",0]],[["",1],["",1],["",1],["",1],["",0]],[["",0],["",1],["",1],["",1],["",0]]]},
-			// currentGame: {"bombs":5,"width":5,"height":5,"board":[[["v",1],["v",1],["",2],["",1],["",2]],[["v",1],["",1],["",3],["",2],["",1]],[["",1],["",2],["",0],["",3],["",2]],[["",0],["",2],["",2],["",1],["",2]],[["",2],["",0],["",1],["",2],["v",1]]]},
-			// currentGame: {"bombs":5,"width":5,"height":5,"board":[[["v",1],["v",1],["",2],["",1],["",2]],[["v",1],["",1],["",3],["",2],["",1]],[["",1],["",2],["",0],["",3],["",2]],[["",0],["",2],["",2],["",1],["f",2]],[["",2],["",0],["",1],["",2],["v",1]]]},
-			currentGame: null
+			currentGame: null,
+			loading: true
 		};
 
 		this.handleCellClick = this.handleCellClick.bind(this);
@@ -25,12 +23,29 @@ class Game extends Component {
 
 	componentDidMount() {
 		API.getGame().then( (response) => {
-			this.setState( { currentGame: response } );
+			this.setState( {
+				currentGame: response,
+				loading: false
+			});
+		}, (error) => {
+			this.setState( {
+				currentGame: null,
+				loading: false
+			});
 		})
 	}
 
 	handleCellClick(irow, icell) {
+		if (this.state.currentGame &&
+			this.state.currentGame.lost)
+			return;
+
 		console.log(`got a click in ${irow},${icell}`);
+		API.click(irow, icell).then( (response) => {
+			this.setState( {
+				currentGame: response
+			});
+		})
 	}
 
 	createNewGame(newGame) {
@@ -38,28 +53,26 @@ class Game extends Component {
 		API.createGame(newGame).then( (newGame) => {
 			this.setState( { currentGame: newGame } );
 		})
-		// // TODO call API
-		// // curl -v -d 'width=5&height=5' http://localhost:3088/game; echo
-		//
-		// this.setState( (prevState, props) => {
-		// 	return {
-		// 		currentGame: {
-		// 			width: newGame.width,
-		// 			height: newGame.height,
-		// 			bombs: newGame.bombs
-		// 		}
-		// 	}
-		// })
+
+	}
+
+	clearGame() {
+		API.resetGame();
+		this.setState( { currentGame: null } );
 	}
 
 	render() {
 
 		let currentGame = this.state.currentGame;
 
+		if (this.state.loading)
+			return "Please wait";
+
 		return (
 			<div>
 				<StatusBar
 					currentGame={currentGame}
+					clearGame={this.clearGame.bind(this)}
 				/>
 				{
 					currentGame ?
@@ -68,7 +81,8 @@ class Game extends Component {
 							handleCellClick={this.handleCellClick}
 						/> :
 						<NewGameForm
-							createNewGame={this.createNewGame.bind(this)}/>
+							createNewGame={this.createNewGame.bind(this)}
+						/>
 				}
 			</div>
 		)
