@@ -5,13 +5,17 @@ class Board extends Component {
 
 	render() {
 
-		let width = this.props.width;
-		let height = this.props.height;
-		let board = this.props.board;
+		let currentGame = this.props.currentGame;
+
+		let width = currentGame.width;
+		let height = currentGame.height;
+		let board = currentGame.board;
+
+		console.log(this.props)
 
 		return (
 			<div>
-				Board {{width}} x {{height}}
+				<div>Board {width} x {height}</div>
 				<table>
 					{
 						board.map( (row) => {

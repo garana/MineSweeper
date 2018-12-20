@@ -10,7 +10,7 @@ class Game extends Component {
 		super(props);
 
 		this.state = {
-			currentGame: null,
+			currentGame: {"width":5,"height":5,"board":[[["",1],["",2],["",3],["",2],["",1]],[["",2],["",2],["",2],["",2],["",1]],[["",0],["",2],["",2],["",0],["",0]],[["",1],["",1],["",1],["",1],["",0]],[["",0],["",1],["",1],["",1],["",0]]]},
 			newGame: {
 				width: 5,
 				height: 5
@@ -69,7 +69,7 @@ class Game extends Component {
 				<StatusBar/>
 				{
 					currentGame ?
-						<Board/> :
+						<Board currentGame={currentGame}/> :
 						<div className={"new-game"}>
 							<div className={"button"}>
 								New Game
