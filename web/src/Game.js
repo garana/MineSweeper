@@ -10,9 +10,54 @@ class Game extends Component {
 		super(props);
 
 		this.state = {
-			currentGame: null
+			currentGame: null,
+			newGame: {
+				width: 5,
+				height: 5
+			}
 		}
 
+	}
+
+	handleNewGameWidthChange(event) {
+		this.setState( (prevState, props) => {
+			return {
+				newGame: {
+					...prevState.newGame,
+					width: event.target.value
+				}
+			}
+		})
+	}
+
+	handleNewGameHeightChange(event) {
+		this.setState( (prevState, props) => {
+			return {
+				newGame: {
+					...prevState.newGame,
+					height: event.target.value
+				}
+			}
+		})
+	}
+
+	handleNewGameClick() {
+		this.setState( (prevState, props) => {
+			this.createNewGame();
+		})
+	}
+
+	createNewGame() {
+		// TODO call API
+		// curl -v -d 'width=5&height=5' http://localhost:3088/game; echo
+		this.setState( (prevState, props) => {
+			return {
+				currentGame: {
+					width: this.state.newGame.width,
+					height: this.state.newGame.height,
+				}
+			}
+		})
 	}
 
 	render() {
