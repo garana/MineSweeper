@@ -95,17 +95,18 @@ export class Board {
 
 	public won(): boolean {
 
-		let flaggedc = 0;
-
 		for (let x = this.width; x--;) {
 			for (let y = this.height; y--;) {
-				if (this._cells[y][x].flagged) {
-					flaggedc++;
+				if (
+					(this._cells[y][x].hasMine) &&
+					(!this._cells[y][x].flagged)
+				) {
+					return false;
 				}
 			}
 		}
 
-		return flaggedc === this.mines;
+		return true;
 
 	}
 

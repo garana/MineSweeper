@@ -72,15 +72,15 @@ var Board = /** @class */ (function () {
         }
     }
     Board.prototype.won = function () {
-        var flaggedc = 0;
         for (var x = this.width; x--;) {
             for (var y = this.height; y--;) {
-                if (this._cells[y][x].flagged) {
-                    flaggedc++;
+                if ((this._cells[y][x].hasMine) &&
+                    (!this._cells[y][x].flagged)) {
+                    return false;
                 }
             }
         }
-        return flaggedc === this.mines;
+        return true;
     };
     Board.prototype._coordsInRange = function (x, y) {
         return (x >= 0) &&
