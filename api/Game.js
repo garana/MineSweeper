@@ -19,12 +19,16 @@ var Game = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    Game.prototype.won = function () {
+        return this._board.won();
+    };
     Game.prototype.toJSON = function () {
         return {
             width: this.width,
             height: this.height,
             mines: this.mines,
             lost: this.lost,
+            won: this.won(),
             cells: this._board.cells
         };
     };
@@ -38,12 +42,16 @@ var Game = /** @class */ (function () {
             this._lost = true;
         }
     };
+    Game.prototype.flag = function (x, y, flagged) {
+        this.board.flag(x, y, !!flagged);
+    };
     Game.prototype.publicView = function () {
         return {
             width: this.width,
             height: this.height,
             mines: this.mines,
             lost: this.lost,
+            won: this.won(),
             board: this.board.publicView()
         };
     };

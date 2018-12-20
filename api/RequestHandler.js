@@ -120,7 +120,7 @@ var RequestHandler = /** @class */ (function () {
             var y = parseInt(req.body.y);
             var flagged = parseInt(req.body.flagged);
             try {
-                game.board.flag(x, y, !!flagged);
+                game.flag(x, y, !!flagged);
                 _this.saveGame(req, res, game).then(function () {
                     _this.sendGame(res, game);
                 });

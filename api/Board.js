@@ -71,6 +71,17 @@ var Board = /** @class */ (function () {
                             (this._hasBombSafe(x, y - 1) ? 1 : 0);
         }
     }
+    Board.prototype.won = function () {
+        var flaggedc = 0;
+        for (var x = this.width; x--;) {
+            for (var y = this.height; y--;) {
+                if (this._cells[y][x].flagged) {
+                    flaggedc++;
+                }
+            }
+        }
+        return flaggedc === this.mines;
+    };
     Board.prototype._coordsInRange = function (x, y) {
         return (x >= 0) &&
             (y >= 0) &&
