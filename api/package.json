@@ -15,6 +15,7 @@
   "author": "Gonzalo A. Arana <gonzalo.arana@gmail.com>",
   "license": "BSD-3-Clause",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.16.4",
     "ts-node": "^7.0.1"
   }

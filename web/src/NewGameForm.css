@@ -1,0 +1,18 @@
+
+.new-game {
+	margin-top: 1em;
+}
+
+.new-game .new-game-input {
+	margin-right: 1em;
+	display: inline-block;
+}
+
+.new-game .new-game-input input {
+	margin-left: .5em;
+}
+
+.new-game .new-game-button {
+	display: inline-block;
+}
+

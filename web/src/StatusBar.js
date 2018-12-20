@@ -7,6 +7,9 @@ class StatusBar extends Component {
 
 		let currentGame = this.props.currentGame;
 
+		if (!currentGame)
+			return "No game loaded";
+
 		return (
 			<div>
 				Size: {currentGame.height} x {currentGame.width}

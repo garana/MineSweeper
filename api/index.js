@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
+var cors = require("cors");
 var process = require("process");
 var path = require("path");
 var bodyParser = require("body-parser");
@@ -21,6 +22,7 @@ console.log("MineSweeper listening on " + port);
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(cookieParser());
+app.use(cors());
 app.use(express.static(path.join(__dirname + '/../build', 'public')));
 app.route('/game')
     .post(handler.createBoard.bind(handler))

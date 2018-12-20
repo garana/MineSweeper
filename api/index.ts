@@ -1,5 +1,6 @@
 
 import * as express from 'express';
+import * as cors from 'cors';
 import * as process from 'process';
 import * as path from 'path';
 import * as bodyParser from 'body-parser';
@@ -26,6 +27,7 @@ console.log(`MineSweeper listening on ${port}`);
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(cookieParser());
+app.use(cors());
 
 app.use(express.static(path.join(__dirname + '/../build', 'public')));
 

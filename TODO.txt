@@ -19,3 +19,6 @@
 
  [ ] Board initialization (Board.constructor): could be smarter (initialize the
      board as empty, place some random bombs).
+
+ [ ] CORS is allowed without restrictions. This might need review after initial
+     clients are developed.
