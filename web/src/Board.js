@@ -7,6 +7,19 @@ class Board extends Component {
 		super(props)
 	}
 
+	showCell(cell) {
+
+		let [ flags, count ] = cell;
+
+		if (flags.indexOf("v") >= 0)
+			return count;
+
+		if (flags.indexOf("f") >= 0)
+			return '!';
+
+		return '?';
+	}
+
 	render() {
 
 		let currentGame = this.props.currentGame;
@@ -20,7 +33,6 @@ class Board extends Component {
 
 		return (
 			<div>
-				<div>Board {width} x {height}</div>
 				<table>
 					{
 						board.map( (row, irow) => {
@@ -30,7 +42,7 @@ class Board extends Component {
 										return <td
 											key={`cell-${icell}`}
 											onClick={handleCellClick.bind(null, irow, icell)}
-										>{cell[1]}</td>
+										>{this.showCell(cell)}</td>
 									})
 								}
 							</tr>

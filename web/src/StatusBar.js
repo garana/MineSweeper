@@ -4,9 +4,14 @@ import React, { Component } from 'react';
 class StatusBar extends Component {
 
 	render() {
+
+		let currentGame = this.props.currentGame;
+
 		return (
 			<div>
-				Status Bar
+				Size: {currentGame.height} x {currentGame.width}
+				&nbsp; |
+				&nbsp;{currentGame.bombs} Bombs
 			</div>
 		)
 	}
