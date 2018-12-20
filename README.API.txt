@@ -31,20 +31,27 @@ POST /game
 
    - width: integer: 5..50
    - height: integer: 5..50
+   - mines: integer: 5..sqrt(width*height)
+            Optional argument, defaults to 5.
+            It's clamped to the 5..sqrt(width*height) range.
 
    (Limits are in api/Config.ts)
 
 GET /game
   Returns the full board as JSON structure.
   Each cell is represented by an array of 2 entries:
-    - flags: a string indicating the flags "visible" (represented with a 'v')
-    and "flagged" (represented with an 'f').
-    - the number of neighboring bombs.
+    - flags: a string indicating the flags:
+      "visible" (represented with a 'v'),
+      "flagged" (represented with an 'f'),
+      "hasAMine" (represented with an 'm').  If this is visible, it means the
+                 user clicked on a mine.
+    - the number of neighboring mines.
 
   Board (5x5) in a response:
   {
      "width":5,
      "height":5,
+     "lost": false,   // still in the game
      "board":[
         [             // first row
            ["f",0],   // top-left cell, flagged
@@ -79,6 +86,7 @@ Testing
 =======
 
 Launch the API (remember to run .setup.sh first):
+cd api/
 PORT=3088 node --require ts-node/register index.js
 
 Create a 5x5 board:
