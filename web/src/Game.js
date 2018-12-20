@@ -13,9 +13,12 @@ class Game extends Component {
 			currentGame: {"width":5,"height":5,"board":[[["",1],["",2],["",3],["",2],["",1]],[["",2],["",2],["",2],["",2],["",1]],[["",0],["",2],["",2],["",0],["",0]],[["",1],["",1],["",1],["",1],["",0]],[["",0],["",1],["",1],["",1],["",0]]]},
 			newGame: {
 				width: 5,
-				height: 5
+				height: 5,
+				bombs: 5
 			}
 		}
+
+		this.handleCellClick = this.handleCellClick.bind(this);
 
 	}
 
@@ -47,6 +50,10 @@ class Game extends Component {
 		})
 	}
 
+	handleCellClick(irow, icell) {
+		console.log(`got a click in ${irow},${icell}`);
+	}
+
 	createNewGame() {
 		// TODO call API
 		// curl -v -d 'width=5&height=5' http://localhost:3088/game; echo
@@ -69,7 +76,10 @@ class Game extends Component {
 				<StatusBar/>
 				{
 					currentGame ?
-						<Board currentGame={currentGame}/> :
+						<Board
+							currentGame={currentGame}
+							handleCellClick={this.handleCellClick}
+						/> :
 						<div className={"new-game"}>
 							<div className={"button"}>
 								New Game

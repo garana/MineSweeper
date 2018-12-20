@@ -3,6 +3,10 @@ import React, { Component } from 'react';
 
 class Board extends Component {
 
+	constructor(props) {
+		super(props)
+	}
+
 	render() {
 
 		let currentGame = this.props.currentGame;
@@ -10,19 +14,23 @@ class Board extends Component {
 		let width = currentGame.width;
 		let height = currentGame.height;
 		let board = currentGame.board;
+		let handleCellClick = this.props.handleCellClick;
 
-		console.log(this.props)
+		console.log(this.props);
 
 		return (
 			<div>
 				<div>Board {width} x {height}</div>
 				<table>
 					{
-						board.map( (row) => {
-							return <tr>
+						board.map( (row, irow) => {
+							return <tr key={`row-${irow}`}>
 								{
-									row.map( (cell) => {
-										return <td>{cell[1]}</td>
+									row.map( (cell, icell) => {
+										return <td
+											key={`cell-${icell}`}
+											onClick={handleCellClick.bind(null, irow, icell)}
+										>{cell[1]}</td>
 									})
 								}
 							</tr>
