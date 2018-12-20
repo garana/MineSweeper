@@ -35,13 +35,22 @@ class Game extends Component {
 		})
 	}
 
-	handleCellClick(irow, icell) {
+	cellIsFlagged(x, y) {
+		return this.state.currentGame.board[x][y][0].indexOf("f") < 0
+	}
+
+	handleCellClick(irow, icell, isFlagging) {
 		if (this.state.currentGame &&
 			this.state.currentGame.lost)
 			return;
 
-		console.log(`got a click in ${irow},${icell}`);
-		API.click(irow, icell).then( (response) => {
+		console.log(`got a click in ${irow},${icell} flagging=${!!isFlagging}`);
+
+		let ready = isFlagging ?
+			API.flag(irow, icell, this.cellIsFlagged(irow, icell)) :
+			API.click(irow, icell);
+
+		ready.then( (response) => {
 			this.setState( {
 				currentGame: response
 			});

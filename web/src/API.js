@@ -38,6 +38,21 @@ class API {
 		})
 	}
 
+	static flag(row, column, flagged) {
+		return $.ajax({
+			url: 'http://localhost:3088/flag',
+			method: 'POST',
+			xhrFields: {
+				withCredentials: true
+			},
+			data: {
+				x: column,
+				y: row,
+				flagged: 0+flagged
+			}
+		})
+	}
+
 	static resetGame() {
 		Cookie.remove('mineSweeper');
 	}

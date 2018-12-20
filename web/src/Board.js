@@ -4,6 +4,14 @@ import './Board.css';
 
 class Board extends Component {
 
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			flagging: false
+		}
+	}
+
 	showCell(cell) {
 
 		let [ flags, count ] = cell;
@@ -18,6 +26,10 @@ class Board extends Component {
 			return '!';
 
 		return '?';
+	}
+
+	flaggingChange() {
+		this.setState({ flagging: !this.state.flagging })
 	}
 
 	render() {
@@ -40,7 +52,7 @@ class Board extends Component {
 									row.map( (cell, icell) => {
 										return <td
 											key={`cell-${icell}`}
-											onClick={handleCellClick.bind(null, irow, icell)}
+											onClick={handleCellClick.bind(null, irow, icell, this.state.flagging)}
 										>{this.showCell(cell)}</td>
 									})
 								}
@@ -50,6 +62,18 @@ class Board extends Component {
 					</tbody>
 				</table>
 
+				{
+					currentGame.lost || currentGame.won ?
+						<div></div> :
+						<div className={"flagging-switch"}>
+							<input type={"checkbox"} id={"minesweeper-flagging"}
+								   onChange={this.flaggingChange.bind(this)}/>
+							<label htmlFor={"minesweeper-flagging"}>
+								Flag a cell
+							</label>
+						</div>
+				}
+
 				<div className={"game-lost"}>
 					{
 						currentGame.lost ?
@@ -57,6 +81,15 @@ class Board extends Component {
 							""
 					}
 				</div>
+
+				<div className={"game-won"}>
+					{
+						currentGame.won ?
+							"GREAT WORK!!" :
+							""
+					}
+				</div>
+
 			</div>
 		)
 	}
