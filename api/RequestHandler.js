@@ -38,6 +38,7 @@ var RequestHandler = /** @class */ (function () {
         var _this = this;
         var width = parseInt(req.body.width);
         var height = parseInt(req.body.height);
+        var mines = Math.max(0, Math.min(Math.sqrt(width * height), parseInt(req.body.mines) || 5));
         var sessionCreated = false;
         var boardId = req.cookies ? req.cookies.boardId : null;
         if (!boardId) {
@@ -47,7 +48,7 @@ var RequestHandler = /** @class */ (function () {
         }
         var game;
         try {
-            game = new Game_1.Game(width, height);
+            game = new Game_1.Game(width, height, mines, false);
         }
         catch (e /*: Error | ServerSideError | RequestError*/) {
             this.sendError(res, e);
@@ -100,7 +101,7 @@ var RequestHandler = /** @class */ (function () {
             var x = parseInt(req.body.x);
             var y = parseInt(req.body.y);
             try {
-                game.board.click(x, y);
+                game.click(x, y);
                 _this.saveGame(req, res, game).then(function () {
                     _this.sendGame(res, game);
                 });
